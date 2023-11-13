@@ -139,6 +139,7 @@ app.post('/friend-request', async (req, res) => {
 // endpoint to show all the friend-requests of a particular user
 app.get('/friend-request/:userId', async (req, res) => {
   try {
+    console.log('Friend request')
     const { userId } = req.params
 
     // Fetch the user document based on the userId
@@ -213,14 +214,13 @@ const upload = multer({ storage: storage })
 app.post('/messages', upload.single('imageFile'), async (req, res) => {
   try {
     const { senderId, recepientId, messageType, messageText } = req.body
-
     const newMessage = new Message({
       senderId,
       recepientId,
       messageType,
       message: messageText,
-      timeStamp: new Date(),
       imageUrl: messageType === 'image' ? req.file.path : null,
+      timeStamp: new Date(),
     })
     await newMessage.save()
 
@@ -330,6 +330,6 @@ io.on('connection', (socket) => {
   socket.on('sent-message', (data) => {
     const socketID = onlineUsers.get(data.recepientId)
     console.log('SocketID: ', socketID)
-    io.to(socketID).emit('receive-message', data)
+    socket.to(socketID).emit('receive-message', data)
   })
 })
