@@ -222,6 +222,8 @@ app.post('/messages', upload.single('imageFile'), async (req, res) => {
       imageUrl: messageType === 'image' ? req.file.path : null,
       timeStamp: new Date(),
     })
+    console.log('req body: ', req.body)
+    console.log('New messages: ', newMessage)
     await newMessage.save()
 
     res.status(200).json({ newMessage })
